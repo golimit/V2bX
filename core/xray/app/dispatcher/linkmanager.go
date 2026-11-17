@@ -40,10 +40,13 @@ func (m *LinkManager) RemoveWriter(writer *ManagedWriter) {
 
 func (m *LinkManager) CloseAll() {
 	m.mu.Lock()
-	defer m.mu.Unlock()
-	for w, r := range m.links {
+	links := m.links
+	m.links = make(map[*ManagedWriter]buf.Reader)
+	m.mu.Unlock()
+	// Close outside the lock. ManagedWriter.Close calls RemoveWriter, which
+	// needs the same mutex; holding it here deadlocks user removal.
+	for w, r := range links {
 		common.Close(w)
 		common.Interrupt(r)
 	}
-	clear(m.links)
 }

@@ -9,10 +9,12 @@
 
 | 内核 | 本仓库锁定 | 上游最新稳定 | 状态 |
 |------|------------|--------------|------|
-| [Xray-core](https://github.com/XTLS/Xray-core) | `v1.260711.0` → [golimit/xray-core](https://github.com/golimit/xray-core) `@b17a88f9` | **v26.7.11** | 已对齐；相对 upstream/main 仅差 1 个 CI commit |
-| [sing-box](https://github.com/SagerNet/sing-box) | `v1.13.14` → [golimit/sing-box_mod](https://github.com/golimit/sing-box_mod) `v1.13.14-mod.2` | **1.13.14** | 已对齐稳定版（未跟 1.14 alpha） |
+| [Xray-core](https://github.com/XTLS/Xray-core) | `v1.260327.1-0.20261109052709-676eaf66f8f0`（git tag **v26.11.9**） | **v26.11.9** | 直接依赖官方模块 |
+| [sing-box](https://github.com/SagerNet/sing-box) | `v1.14.4` → [golimit/sing-box_mod](https://github.com/golimit/sing-box_mod) `v1.14.4-mod.2` | **1.14.4** | 稳定版 + V2bX 用户热更新补丁（未跟 1.15 alpha） |
 
 以 `go.mod` 的 `require` / `replace` 为准。
+
+Xray 26.11.9 起，VLESS / VMess / Trojan 入站走 freedom 出站时，默认拦截私网和特殊地址（含 `127.0.0.0/8`）。公网代理不受影响。
 
 ## 功能矩阵
 
@@ -76,7 +78,7 @@ GOEXPERIMENT=jsonv2 go build -v -o build_assets/V2bX \
   -trimpath -ldflags "-X 'github.com/InazumaV/V2bX/cmd.version=$version' -s -w -buildid="
 ```
 
-推荐 Go **1.26.5**（Dockerfile 已锁定）。构建需 `GOEXPERIMENT=jsonv2`。
+推荐 Go **1.27.3**（Dockerfile 与 `go.mod` 已锁定）。构建需 `GOEXPERIMENT=jsonv2`。
 
 ### 本地定制内核
 
@@ -84,18 +86,15 @@ GOEXPERIMENT=jsonv2 go build -v -o build_assets/V2bX \
 
 | 目录 | 仓库 | replace |
 |------|------|---------|
-| `sing-box_mod/` | [golimit/sing-box_mod](https://github.com/golimit/sing-box_mod) | `sagernet/sing-box` |
-| `xray-core/` | [golimit/xray-core](https://github.com/golimit/xray-core) | `xtls/xray-core` |
-| `sing-vmess/` | [golimit/sing-vmess](https://github.com/golimit/sing-vmess) | `sagernet/sing-vmess`（module path 仍声明为官方名） |
+| `sing-box_mod/` | [golimit/sing-box_mod](https://github.com/golimit/sing-box_mod) `v1.14.4-mod` | `sagernet/sing-box` |
+
+Xray 使用官方模块，不再 replace 到 fork。`sing-vmess` 跟随 sing-box 1.14.4 的依赖，不再 replace。
 
 ```bash
-git clone -b v1.13.14-mod git@github.com:golimit/sing-box_mod.git sing-box_mod
-git clone -b main git@github.com:golimit/xray-core.git xray-core
-# cd xray-core && git checkout b17a88f9b46d
-git clone -b main git@github.com:golimit/sing-vmess.git sing-vmess
+git clone -b v1.14.4-mod git@github.com:golimit/sing-box_mod.git sing-box_mod
 ```
 
-本地联调时临时改 `replace` 为 `./...`，**勿提交进 CI**。生产仍用远程 tag / commit。改完子仓库：push 子仓 → 更新本仓 `go.mod`/`go.sum` → 提交。
+本地联调时临时改 `replace` 为 `./sing-box_mod`，**勿提交进 CI**。生产仍用远程 tag。改完子仓库：push 子仓 → 更新本仓 `go.mod`/`go.sum` → 提交。
 
 ## 免责声明
 

@@ -45,7 +45,7 @@ func init() {
 
 func New(c *conf.CoreConfig) (vCore.Core, error) {
 	ctx := context.Background()
-	ctx = box.Context(ctx, include.InboundRegistry(), include.OutboundRegistry(), include.EndpointRegistry(), include.DNSTransportRegistry(), include.ServiceRegistry())
+	ctx = box.Context(ctx, include.InboundRegistry(), include.OutboundRegistry(), include.EndpointRegistry(), include.DNSTransportRegistry(), include.ServiceRegistry(), include.CertificateProviderRegistry())
 	options := option.Options{}
 	if len(c.SingConfig.OriginalPath) != 0 {
 		data, err := os.ReadFile(c.SingConfig.OriginalPath)

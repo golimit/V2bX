@@ -14,6 +14,7 @@ import (
 	"github.com/InazumaV/V2bX/common/counter"
 	"github.com/sagernet/sing-box/adapter"
 	"github.com/sagernet/sing-box/log"
+	"github.com/sagernet/sing-tun"
 	N "github.com/sagernet/sing/common/network"
 )
 
@@ -24,6 +25,10 @@ type HookServer struct {
 }
 
 func (h *HookServer) ModeList() []string {
+	return nil
+}
+
+func (h *HookServer) RoutedFlow(context.Context, adapter.InboundContext, adapter.Rule, adapter.Outbound) tun.FlowTracker {
 	return nil
 }
 
