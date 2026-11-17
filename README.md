@@ -5,14 +5,17 @@
 
 支持协议：VMess / VLESS / Trojan / Shadowsocks / Hysteria1/2；多节点单实例、在线 IP / TCP 连接限制、端口与用户级限速、条件编译多内核。
 
-## 内核版本（dev）
+## 内核版本
+
+`master` 与 `dev` 都包含内核升级 `48f77d2`（Xray v26.11.9 / sing-box 1.14.4）。合入前的 master 打了 tag **[v0.4.2](https://github.com/golimit/V2bX/tree/v0.4.2)**（`a5108d1`），需要回退时检出该 tag。
 
 | 内核 | 本仓库锁定 | 上游最新稳定 | 状态 |
 |------|------------|--------------|------|
 | [Xray-core](https://github.com/XTLS/Xray-core) | `v1.260327.1-0.20261109052709-676eaf66f8f0`（git tag **v26.11.9**） | **v26.11.9** | 直接依赖官方模块 |
 | [sing-box](https://github.com/SagerNet/sing-box) | `v1.14.4` → [golimit/sing-box_mod](https://github.com/golimit/sing-box_mod) `v1.14.4-mod.2` | **1.14.4** | 稳定版 + V2bX 用户热更新补丁（未跟 1.15 alpha） |
+| [Hysteria2](https://github.com/apernet/hysteria) | `v2.9.3` | 未跟进 | 仍锁定 `v2.9.3` |
 
-以 `go.mod` 的 `require` / `replace` 为准。
+以 `go.mod` 的 `require` / `replace` 为准。构建使用 Go **1.27.3**。
 
 Xray 26.11.9 起，VLESS / VMess / Trojan 入站走 freedom 出站时，默认拦截私网和特殊地址（含 `127.0.0.0/8`）。公网代理不受影响。
 
@@ -32,13 +35,13 @@ Xray 26.11.9 起，VLESS / VMess / Trojan 入站走 freedom 出站时，默认�
 
 | Tag | 说明 |
 |-----|------|
-| `latest` | 稳定版 |
-| `dev` | 开发版 |
+| `latest` | `master` |
+| `dev` | `dev` 分支；当前与 `master` 相同 |
 
 ```bash
-docker pull ghcr.io/golimit/v2bx:latest   # 或 :dev
+docker pull ghcr.io/golimit/v2bx:latest
 
-wget https://raw.githubusercontent.com/golimit/V2bX/dev/docker-compose.yaml
+wget https://raw.githubusercontent.com/golimit/V2bX/master/docker-compose.yaml
 # 编辑 v2bx_config/config.json 后：
 docker-compose up -d
 ```
